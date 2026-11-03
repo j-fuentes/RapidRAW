@@ -57,18 +57,34 @@ fn live_upload_is_stacked_on_original() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let ids = runtime.block_on(async {
         let modified = file_time(&original);
-        let original_id = client.upload(&original, &modified, &modified).await.unwrap().id;
+        let original_id = client
+            .upload(&original, &modified, &modified)
+            .await
+            .unwrap()
+            .id;
         let new_id = upload_stacked(&client, &export, Some(original_id.clone()), None)
             .await
             .unwrap()
             .expect("export was uploaded as a new asset");
         let stack = client
-            .stacks()
+            .stack_of(&original_id)
+            .await
+            .unwrap()
+            .expect("original is in a stack");
+        let listed = client
+            .all_stacks()
             .await
             .unwrap()
             .into_iter()
             .find(|stack| stack.assets.iter().any(|asset| asset.id == original_id))
-            .expect("original is in a stack");
+            .expect("original is in the full stack list");
+        let ids_of = |stack: &crate::immich::client::Stack| {
+            let mut ids: Vec<String> = stack.assets.iter().map(|a| a.id.clone()).collect();
+            ids.sort();
+            ids
+        };
+        assert_eq!(listed.primary_asset_id, stack.primary_asset_id);
+        assert_eq!(ids_of(&listed), ids_of(&stack));
         assert_eq!(stack.primary_asset_id, new_id);
         assert!(stack.assets.iter().any(|asset| asset.id == new_id));
         vec![original_id, new_id]
@@ -84,7 +100,11 @@ fn live_upload_is_stacked_on_original() {
                 .send()
                 .await
                 .unwrap();
-            assert!(response.status().is_success(), "cleanup: {}", response.status());
+            assert!(
+                response.status().is_success(),
+                "cleanup: {}",
+                response.status()
+            );
         });
         println!("deleted test assets");
     }
