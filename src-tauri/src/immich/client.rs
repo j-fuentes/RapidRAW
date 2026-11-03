@@ -28,10 +28,6 @@ pub struct Asset {
     #[serde(default)]
     pub file_modified_at: Option<String>,
     #[serde(default)]
-    pub file_created_at: Option<String>,
-    #[serde(default)]
-    pub created_at: Option<String>,
-    #[serde(default)]
     pub is_trashed: bool,
 }
 
