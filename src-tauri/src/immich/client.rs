@@ -67,6 +67,8 @@ pub struct UploadResult {
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Stack {
+    #[serde(default)]
+    pub id: String,
     pub primary_asset_id: String,
     pub assets: Vec<Asset>,
 }
