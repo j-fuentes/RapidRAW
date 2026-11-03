@@ -1,0 +1,39 @@
+name: HEIC fork build
+
+# Fork j-fuentes/RapidRAW: builds the HEIC branch for the platforms Jose uses
+# (Android arm64 APK, Linux x64 AppImage/deb, macOS arm64 dmg) and uploads
+# them as workflow artifacts. Releases are created by hand from these.
+
+on:
+  push:
+    branches:
+      - 'heic-*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-15'
+            target: aarch64-apple-darwin
+            asset-prefix: 'heic'
+          - platform: 'ubuntu-22.04'
+            target: ''
+            asset-prefix: 'heic'
+          - platform: 'ubuntu-latest'
+            mobile: 'android'
+            target: 'aarch64-linux-android'
+            args: '--target aarch64'
+            asset-prefix: 'heic'
+    uses: ./.github/workflows/build.yml
+    with:
+      platform: ${{ matrix.platform }}
+      target: ${{ matrix.target }}
+      build-args: ${{ matrix.args }}
+      asset-prefix: ${{ matrix.asset-prefix }}
+      mobile: ${{ matrix.mobile }}
+    secrets: inherit
+    permissions:
+      contents: write
