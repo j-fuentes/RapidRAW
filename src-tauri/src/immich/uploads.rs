@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use tauri::{AppHandle, Emitter, Manager};
 
-use super::{Session, registry, session, sync};
+use super::{ImmichClient, Session, registry, session, sync};
 
 #[derive(Debug, Clone)]
 struct ExportTarget {
@@ -57,6 +57,14 @@ pub fn prepare_export(
         },
     );
     Ok(folder)
+}
+
+#[cfg_attr(not(target_os = "android"), allow(dead_code))]
+pub fn is_export_path(path: &Path) -> bool {
+    let targets = EXPORT_TARGETS.lock().unwrap();
+    path.ancestors()
+        .skip(1)
+        .any(|folder| targets.contains_key(folder))
 }
 
 pub fn on_exported(
@@ -113,17 +121,32 @@ async fn upload_export(
         None => None,
     };
 
-    let modified = file_time(output);
-    let new_id = client.upload(output, &modified, &modified).await?.id;
-    if original.as_deref() == Some(new_id.as_str()) {
-        return Ok(());
-    }
-
     let album = match &target.album {
         ExportAlbum::None => None,
         ExportAlbum::Source => entry.as_ref().and_then(|e| e.album_id.clone()),
         ExportAlbum::Album(id) => Some(id.clone()),
     };
+    let Some(new_id) = upload_stacked(client, output, original, album).await? else {
+        return Ok(());
+    };
+    if entry.is_some() {
+        registry::set_listed_asset(source, &new_id);
+    }
+    Ok(())
+}
+
+async fn upload_stacked(
+    client: &ImmichClient,
+    output: &Path,
+    original: Option<String>,
+    album: Option<String>,
+) -> Result<Option<String>, String> {
+    let modified = file_time(output);
+    let new_id = client.upload(output, &modified, &modified).await?.id;
+    if original.as_deref() == Some(new_id.as_str()) {
+        return Ok(None);
+    }
+
     if let Some(album) = album {
         client
             .add_to_album(&album, std::slice::from_ref(&new_id))
@@ -143,10 +166,7 @@ async fn upload_export(
         }
         client.create_stack(&ids).await?;
     }
-    if entry.is_some() {
-        registry::set_listed_asset(source, &new_id);
-    }
-    Ok(())
+    Ok(Some(new_id))
 }
 
 async fn upload_original(
@@ -191,3 +211,4 @@ fn file_time(path: &Path) -> String {
         .unwrap_or_else(|_| chrono::Utc::now())
         .to_rfc3339()
 }
+

@@ -170,6 +170,18 @@ jobs:
         run: |
           npx tauri android build --verbose ${{ inputs.build-args }}
 
+      - name: Show merged Android network security settings
+        if: ${{ inputs.mobile == 'android' }}
+        shell: bash
+        run: |
+          find src-tauri/gen/android/app/build/intermediates -name AndroidManifest.xml \( -path '*merged_manifest*' -o -path '*packaged_manifests*' \) | while read -r f; do
+            echo "== $f"
+            grep -o -E 'android:(networkSecurityConfig|usesCleartextTraffic)="[^"]*"' "$f" || true
+          done
+          find src-tauri/gen/android/app/build/intermediates -name 'network_security_config*.xml' | head -5 | while read -r f; do
+            echo "== $f"; grep -c '<domain ' "$f" || true; grep -o 'ye1.c.lencr.org' "$f" | head -1 || true
+          done
+
       - name: Prepare Android Release Assets
         if: ${{ inputs.mobile == 'android' && inputs.release-id != '' }}
         shell: bash

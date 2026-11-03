@@ -386,7 +386,7 @@ export default function ExportPanel({
   const filenameInputRef = useRef<HTMLInputElement>(null);
   const osPlatform = useOsPlatform();
   const isAndroid = osPlatform === 'android';
-  const canExportToImmich = useImmichExportAvailable() && !isAndroid;
+  const canExportToImmich = useImmichExportAvailable();
   const destination = destinationType === 'immich' && !canExportToImmich ? 'customFolder' : destinationType;
   const immichExport = useImmichExportChoice();
   const activePanels = useUIStore((state) => state.activePanels);

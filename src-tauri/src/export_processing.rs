@@ -1178,17 +1178,11 @@ fn save_image_with_metadata(
     )?;
 
     #[cfg(target_os = "android")]
-    {
-        let file_name = output_path
-            .file_name()
-            .and_then(|name| name.to_str())
-            .ok_or_else(|| "Missing Android export file name".to_string())?;
-        crate::android_integration::save_image_bytes_to_android_gallery(
-            file_name,
-            mime_type_for_extension(&extension),
-            &image_bytes,
-        )?;
-    }
+    save_android_export(
+        output_path,
+        mime_type_for_extension(&extension),
+        &image_bytes,
+    )?;
 
     #[cfg(not(target_os = "android"))]
     {
@@ -1201,6 +1195,23 @@ fn save_image_with_metadata(
     }
 
     Ok(())
+}
+
+#[cfg(target_os = "android")]
+fn save_android_export(output_path: &Path, mime_type: &str, bytes: &[u8]) -> Result<(), String> {
+    if crate::immich::is_export_path(output_path) {
+        if let Some(parent) = output_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| format!("Failed to create folder '{}': {}", parent.display(), e))?;
+        }
+        return fs::write(output_path, bytes)
+            .map_err(|e| format!("Failed to write file to '{}': {}", output_path.display(), e));
+    }
+    let file_name = output_path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| "Missing Android export file name".to_string())?;
+    crate::android_integration::save_image_bytes_to_android_gallery(file_name, mime_type, bytes)
 }
 
 #[cfg(target_os = "android")]
@@ -1546,17 +1557,7 @@ fn export_masks_for_image(
             let alpha_bytes = encode_grayscale_to_png(&alpha_resized)?;
             ensure_export_not_cancelled(cancellation_token)?;
             #[cfg(target_os = "android")]
-            {
-                let file_name = mask_alpha_path
-                    .file_name()
-                    .and_then(|name| name.to_str())
-                    .ok_or_else(|| "Missing Android mask export file name".to_string())?;
-                crate::android_integration::save_image_bytes_to_android_gallery(
-                    file_name,
-                    "image/png",
-                    &alpha_bytes,
-                )?;
-            }
+            save_android_export(&mask_alpha_path, "image/png", &alpha_bytes)?;
 
             #[cfg(not(target_os = "android"))]
             fs::write(&mask_alpha_path, alpha_bytes).map_err(|e| e.to_string())?;
