@@ -212,3 +212,6 @@ fn file_time(path: &Path) -> String {
         .to_rfc3339()
 }
 
+#[cfg(test)]
+#[path = "uploads_tests.rs"]
+mod tests;
