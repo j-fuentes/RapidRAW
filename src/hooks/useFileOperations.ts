@@ -10,6 +10,7 @@ import { JobKind, useProcessStore } from '../store/useProcessStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { ImageFlag, Invokes } from '../components/ui/AppProperties';
 import { Status } from '../components/ui/ExportImportProperties';
+import { usesAndroidBackend } from '../remote/backend';
 
 export const transferFiles = (kind: JobKind.Copy | JobKind.Move, sourcePaths: string[], destinationFolder: string) =>
   useProcessStore
@@ -334,7 +335,7 @@ export function useFileOperations(
     async (targetPath: string) => {
       const { supportedTypes, osPlatform } = useSettingsStore.getState();
       const { setUI } = useUIStore.getState();
-      const isAndroid = osPlatform === 'android';
+      const isAndroid = usesAndroidBackend(osPlatform);
 
       try {
         const nonRaw = supportedTypes?.nonRaw || [];

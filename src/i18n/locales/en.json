@@ -1034,7 +1034,8 @@
       "serverUrlDesc": "The address you open Immich with in the browser.",
       "test": "Test connection",
       "title": "Immich",
-      "working": "Working…"
+      "working": "Working…",
+      "remoteBackend": "With the external server (Settings → Backend), Immich is the server's ({{server}}). Set up its address and API key on the server."
     },
     "sync": {
       "offline": "Offline",
@@ -2123,6 +2124,36 @@
     "title": "Settings",
     "tooltips": {
       "goHome": "Go to Home"
+    },
+    "backend": {
+      "title": "Backend",
+      "description": "Where your photos are processed. This device: the app's own engine, works offline. External server: works like RapidRAW Web in a browser. The editor runs here, but the photos, edits and rendering are on a RapidRAW Web server (e.g. a computer with a GPU), reached over the network.",
+      "modeLocal": "This device",
+      "modeRemote": "External server",
+      "inUseLocal": "In use now: this device.",
+      "inUseRemote": "In use now: external server {{host}}.",
+      "url": "Server address",
+      "urlDesc": "The address you open RapidRAW Web with, e.g. https://rapidraw.example.net. It must be HTTPS (plain http only for localhost).",
+      "user": "User",
+      "password": "Password",
+      "credentialsDesc": "The RapidRAW Web login (RR_AUTH on the server). Stored in a file in this app's data folder that only you can read, not in the system's credential store.",
+      "remoteNotes": "With the external server, file and folder dialogs show the server's folders, exports are saved on the server (or uploaded to Immich by the server) and the settings are the server's. Photos stored on this device, the Files tab and folders from this computer of RapidRAW Web, and tethering are not available. Switching back to This device brings everything back as it was.",
+      "test": "Test connection",
+      "saveReload": "Save and reload",
+      "working": "Working…",
+      "connected": "Connected: RapidRAW {{version}} on the server.",
+      "saved": "Saved. Reloading…",
+      "fallback": "The external server could not be used, so this session runs on this device: {{reason}}",
+      "errors": {
+        "url": "Enter the server address.",
+        "insecure": "The address must start with https:// (the app does not allow unencrypted connections to other computers).",
+        "unreachable": "The server cannot be reached. Check the address and that this device is on the network (or VPN) of the server.",
+        "auth": "Wrong user or password.",
+        "notRapidraw": "This is not a compatible RapidRAW Web server (it needs a version with support for the RapidRAW app).",
+        "protocol": "The server speaks a different protocol version than this app. Update the app or RapidRAW Web.",
+        "version": "The server runs a different RapidRAW version than this app. Use the same version on both.",
+        "noBridge": "RapidRAW is not running on the server (the relay answers, but the RapidRAW Web Bridge is not connected)."
+      }
     }
   },
   "tethering": {

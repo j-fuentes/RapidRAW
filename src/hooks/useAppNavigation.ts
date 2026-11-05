@@ -16,6 +16,7 @@ import { clearLibrarySelection } from './useLibraryActions';
 import { computeSortedLibrary } from './useSortedLibrary';
 import { getImmichAlbumImages, isImmichAlbumId } from '../components/immich/immichApi';
 import { withExpandedImmichStacks } from '../components/immich/immichStacks';
+import { usesAndroidBackend } from '../remote/backend';
 
 export interface AppNavigationProps {
   clearThumbnailQueue: () => void;
@@ -557,7 +558,7 @@ export function useAppNavigation({ clearThumbnailQueue, refs }: AppNavigationPro
   const handleOpenFolder = useCallback(async () => {
     const { osPlatform, appSettings, handleSettingsChange } = useSettingsStore.getState();
     const { rootPaths, folderTrees, setLibrary } = useLibraryStore.getState();
-    const isAndroid = osPlatform === 'android';
+    const isAndroid = usesAndroidBackend(osPlatform);
 
     try {
       let selectedPath = '';

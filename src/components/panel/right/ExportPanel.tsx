@@ -36,6 +36,7 @@ import { useUIStore } from '../../../store/useUIStore';
 import ImmichExportOptions, { useImmichExportAvailable, useImmichExportChoice } from '../../immich/ImmichExportOptions';
 import { prepareImmichExport } from '../../immich/immichApi';
 import { formatBytes } from '../../../utils/formatBytes';
+import { usesAndroidBackend } from '../../../remote/backend';
 
 interface ExportPanelProps {
   exportState: ExportState;
@@ -385,7 +386,7 @@ export default function ExportPanel({
   const [imageAspectRatio, setImageAspectRatio] = useState(16 / 9);
   const filenameInputRef = useRef<HTMLInputElement>(null);
   const osPlatform = useOsPlatform();
-  const isAndroid = osPlatform === 'android';
+  const isAndroid = usesAndroidBackend(osPlatform);
   const canExportToImmich = useImmichExportAvailable();
   const destination = destinationType === 'immich' && !canExportToImmich ? 'customFolder' : destinationType;
   const immichExport = useImmichExportChoice();

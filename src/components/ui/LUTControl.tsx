@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import Slider from './Slider';
 import { useEditorStore } from '../../store/useEditorStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
+import { usesAndroidBackend } from '../../remote/backend';
 
 interface LutEntry {
   name: string;
@@ -142,7 +143,7 @@ export default function LUTControl({
   const handleImport = async () => {
     try {
       const { osPlatform } = useSettingsStore.getState();
-      const isAndroid = osPlatform === 'android';
+      const isAndroid = usesAndroidBackend(osPlatform);
 
       const selected = await open({
         multiple: true,

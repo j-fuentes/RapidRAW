@@ -16,6 +16,7 @@ import {
 } from './immichApi';
 import { useImmichStore } from './useImmichStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
+import { isRemoteBackend } from '../../remote/backend';
 
 type Status =
   | { kind: 'idle' }
@@ -75,6 +76,22 @@ export default function ImmichSettings() {
   }, [appSettings?.immich?.serverUrl]);
 
   if (!appSettings || !keyInfo) return null;
+
+  // With an external server (Settings → Backend) Immich is the server's: its key is set up there (saving it from
+  // here would put it into the server's credential store, which on macOS can block the server at its next start)
+  if (isRemoteBackend()) {
+    return (
+      <div className="p-6 bg-surface rounded-xl shadow-md">
+        <Text variant={TextVariants.title} color={TextColors.accent} className="mb-5">
+          {t('immich.settings.title')}
+        </Text>
+        <Text className="mb-4">{t('immich.settings.description')}</Text>
+        <Text variant={TextVariants.small}>
+          {t('immich.settings.remoteBackend', { server: saved.serverUrl || '—' })}
+        </Text>
+      </div>
+    );
+  }
 
   const saveConnection = async () => {
     setStatus({ kind: 'busy' });

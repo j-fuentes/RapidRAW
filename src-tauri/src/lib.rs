@@ -30,6 +30,7 @@ mod app_settings;
 mod app_state;
 mod apple_raw;
 mod as_shot;
+mod backend_config;
 mod auto_straighten;
 mod baseline_exposure;
 mod bm3d;
@@ -2669,6 +2670,8 @@ pub fn run() {
             camera_tethering::tether_get_preview,
             camera_tethering::tether_autofocus,
             guided_perspective::calculate_guided_perspective,
+            backend_config::get_backend_config,
+            backend_config::set_backend_config,
             immich::commands::immich_get_api_key,
             immich::commands::immich_set_api_key,
             immich::commands::immich_test_connection,

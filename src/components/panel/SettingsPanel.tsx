@@ -55,6 +55,7 @@ import { useCloudUsage } from '../../hooks/useCloudUsage';
 import { open } from '@tauri-apps/plugin-shell';
 import ImmichSettings from '../immich/ImmichSettings';
 import DataManagementSettings from './settings/DataManagementSettings';
+import RemoteBackendSettings from './settings/RemoteBackendSettings';
 
 interface ConfirmModalState {
   confirmText: string;
@@ -1372,6 +1373,8 @@ export default function SettingsPanel({
                       </div>
                     </div>
                   </div>
+
+                  <RemoteBackendSettings />
 
                   <ImmichSettings />
 

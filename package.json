@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/check-backend-switch.mjs && vite build",
+    "check:backend": "node scripts/check-backend-switch.mjs",
     "tauri": "tauri",
     "start": "tauri dev",
     "start:tethering": "tauri dev -- --features tethering",

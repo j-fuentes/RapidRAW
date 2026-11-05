@@ -20,6 +20,7 @@ import {
   ThumbnailAspectRatio,
 } from '../components/ui/AppProperties';
 import { useTranslation } from 'react-i18next';
+import { usesAndroidBackend } from '../remote/backend';
 
 interface UseAppInitializationProps {
   preloadedDataRef: React.RefObject<any>;
@@ -238,7 +239,7 @@ export const useAppInitialization = ({
             ? [settings.lastRootPath]
             : [];
 
-        if (!isAndroid && rootFolders.length > 0) {
+        if (!usesAndroidBackend(osPlatform) && rootFolders.length > 0) {
           const currentPath = settings.lastFolderState?.currentFolderPath || rootFolders[0];
           const isAlbum = currentPath.startsWith('Album: ');
           const command =
