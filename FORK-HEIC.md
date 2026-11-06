@@ -45,4 +45,28 @@ Files tab and "folders from this computer", drag & drop from the OS,
 tethering. Exports go to the server's folders or to Immich (uploaded by the
 server); settings and the Immich connection are the server's.
 
+## Android: Share → RapidRAW and Open with → RapidRAW
+
+RapidRAW is offered when sharing photos (`ACTION_SEND`, `ACTION_SEND_MULTIPLE`) and for
+"Open with" (`ACTION_VIEW`): `image/*` (JPEG, HEIC, RAW types such as
+`image/x-fuji-raf`), `application/octet-stream` (how many apps share RAW files) and
+`application/(x-adobe-)dng`.
+
+- `MainActivity.kt` handles the intent on a cold start (`onCreate`) and while the app
+  runs (`onNewIntent`, `singleTask`), not when the task is reopened from recents. It
+  copies every file off the UI thread to
+  `<external media dir>/.library/Imports/Shared/YYYY-MM-DD/<original name>` (the app's
+  library folder; an identical file already there is reused, a different one with the
+  same name gets ` (1)`), then writes a note to `<external media dir>/shared-inbox/`
+  and calls `window.__rapidrawSharedImports()`.
+- `take_shared_imports` (`src-tauri/src/shared_import.rs`) claims the notes once and
+  drops files RapidRAW can't open; `src/hooks/useSharedImports.ts` asks for them when
+  the UI has loaded and when MainActivity calls: one photo opens in the editor, several
+  open in the library on their folder.
+- With the external server as backend, the copies are uploaded with
+  `upload_shared_to_server` (rapidraw-web's `PUT /fm/upload`, as its Files tab) into
+  `<first library folder on the server>/Imports/Shared/YYYY-MM-DD` (a file with the
+  same name there is kept, not replaced) and opened there. If that is not possible
+  the app says so; the copies stay on the device.
+
 HEVC may be covered by patents; this fork is for personal use.

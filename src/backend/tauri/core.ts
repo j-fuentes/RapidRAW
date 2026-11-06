@@ -6,8 +6,16 @@ import { isRemoteBackend, remoteFileUrl } from '../../remote/backend';
 
 export * from '@tauri-apps/api/core';
 
-// Always this app's own backend: the window, its logs, plugins (dialog, clerk, os…) and the backend choice itself
-const LOCAL = new Set(['frontend_ready', 'frontend_log', 'get_backend_config', 'set_backend_config']);
+// Always this app's own backend: the window, its logs, plugins (dialog, clerk, os…), the backend choice itself and
+// the files shared with the app on Android (they are on this device; upload_shared_to_server sends them to the server)
+const LOCAL = new Set([
+  'frontend_ready',
+  'frontend_log',
+  'get_backend_config',
+  'set_backend_config',
+  'take_shared_imports',
+  'upload_shared_to_server',
+]);
 export const isLocalCommand = (cmd: string) => LOCAL.has(cmd) || cmd.startsWith('plugin:');
 
 export function invoke<T>(cmd: string, args?: tauri.InvokeArgs, options?: tauri.InvokeOptions): Promise<T> {

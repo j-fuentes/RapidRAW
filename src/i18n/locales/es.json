@@ -1400,6 +1400,22 @@
       "goHome": "Ir al Inicio",
       "importImages": "Importar imágenes",
       "select": "Seleccionar"
+    },
+    "sharedImports": {
+      "receiving_one": "Recibiendo 1 archivo compartido…",
+      "receiving_other": "Recibiendo {{count}} archivos compartidos…",
+      "opened_one": "1 foto compartida en Imports/Shared/{{folder}}",
+      "opened_other": "{{count}} fotos compartidas en Imports/Shared/{{folder}}",
+      "unsupported": "RapidRAW no puede abrir: {{names}}",
+      "failed_one": "No se pudo copiar 1 archivo compartido.",
+      "failed_other": "No se pudieron copiar {{count}} archivos compartidos.",
+      "error": "No se pudieron abrir los archivos compartidos: {{error}}",
+      "uploading_one": "Subiendo 1 foto compartida a {{host}}…",
+      "uploading_other": "Subiendo {{count}} fotos compartidas a {{host}}…",
+      "uploadFailed_one": "No se pudo subir 1 foto compartida al servidor ({{error}}).",
+      "uploadFailed_other": "No se pudieron subir {{count}} fotos compartidas al servidor ({{error}}).",
+      "remoteNoFolder": "El servidor no tiene ninguna carpeta de biblioteca donde subir las fotos compartidas. Quedan guardadas en este dispositivo (Imports/Shared) y se abren con Ajustes → Backend → Este dispositivo.",
+      "remoteOnlyLocal": "Las fotos compartidas quedan guardadas en este dispositivo (Imports/Shared); con el servidor externo solo se abren en Ajustes → Backend → Este dispositivo."
     }
   },
   "masks": {

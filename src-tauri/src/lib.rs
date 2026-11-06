@@ -67,6 +67,7 @@ mod panorama_utils;
 mod preset_converter;
 mod raw_processing;
 mod relight;
+mod shared_import;
 mod storage;
 mod tagging;
 mod tagging_utils;
@@ -2560,6 +2561,8 @@ pub fn run() {
             update_wgpu_transform,
             release_original_preview,
             android_integration::resolve_android_content_uri_name,
+            shared_import::take_shared_imports,
+            shared_import::upload_shared_to_server,
             cache_utils::clear_session_caches,
             cache_utils::clear_image_caches,
             app_settings::load_settings,

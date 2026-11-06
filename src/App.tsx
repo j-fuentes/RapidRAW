@@ -53,6 +53,7 @@ import { useAppContextMenus } from './hooks/useAppContextMenus';
 import { useSortedLibrary } from './hooks/useSortedLibrary';
 import { useAppNavigation } from './hooks/useAppNavigation';
 import { useExternalEditSession } from './hooks/useExternalEditSession';
+import { useSharedImports } from './hooks/useSharedImports';
 import ExternalEditBar from './components/ui/ExternalEditBar';
 import { Status } from './components/ui/ExportImportProperties';
 
@@ -401,6 +402,9 @@ function App() {
     handleCreateAlbumItem,
     handleRenameAlbumItem,
   } = useLibraryActions(handleImageSelect);
+
+  // Android: Share → RapidRAW / Open with → RapidRAW
+  useSharedImports({ handleImageSelect, handleSelectSubfolder, refreshAllFolderTrees });
 
   useEffect(() => {
     const { setImageSelectHandler } = useUIStore.getState();
